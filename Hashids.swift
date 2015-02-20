@@ -31,7 +31,6 @@ class Hashids
     {
         var _alphabet = (alphabet != nil) ? alphabet! : "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         var _seps = "cfhistuCFHISTU";
-//var o = map(scalars){ $0.value }
         
         self.minHashLength = minHashLength;
         self.guards = [UInt32]();
@@ -235,24 +234,7 @@ class Hashids
         return Int(trunc(value));
     }
     
-    func combine(s1:String, s2:String?, cmpr:(String, Character) -> Bool) -> String
-    {
-        if s2 != nil {
-            var o = String();
-            for c in s1
-            {
-                if cmpr(s2!,c) {
-                    o.append(c);
-                }
-            }
-            return o;
-        }
-        return s1;
-    }
-
 }
-
-
 
 internal func contains<T:CollectionType where T.Generator.Element:Equatable>(a:T, e:T.Generator.Element) -> Bool
 {
@@ -299,25 +281,6 @@ internal func difference<T:CollectionType where T.Generator.Element:Equatable>(a
         };
     }
 }
-
-/*
-internal func shuffle(inout a:[Int32], b:[Int32])
-{
-    var sidx = a.count - 1, scnt = b.count, vidx = 0, v = 0, _p = 0, _i = 0, _j = 0;
-    while(sidx > 0)
-    {
-        v = v % scnt;
-        _i = numericCast(b[v]);
-        _p += _i;
-        _j = (_i + v + _p) % sidx;
-        let tmp = a[sidx];
-        a[sidx] = a[_j];
-        a[_j] = tmp;
-        v += 1;
-        sidx -= 1;
-    }
-}
-*/
 
 internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Generator.Element == UInt32, T.Index == Int, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U)
 {
