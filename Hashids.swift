@@ -10,6 +10,8 @@ import Foundation
 
 class Hashids
 {
+    typealias Char = UInt32;
+    
     private let MIN_ALPHABET_LENGTH:Int = 16;
     
     private let SEP_DIV:Double = 3.5;
@@ -18,13 +20,13 @@ class Hashids
     
     private var minHashLength:UInt;
     
-    private var alphabet:[UInt32];
+    private var alphabet:[Char];
     
-    private var seps:[UInt32];
+    private var seps:[Char];
 
-    private var salt:[UInt32];
+    private var salt:[Char];
     
-    private var guards:[UInt32];
+    private var guards:[Char];
     
 
     init(salt:String!, minHashLength:UInt = 0, alphabet:String? = nil)
@@ -33,7 +35,7 @@ class Hashids
         var _seps = "cfhistuCFHISTU";
         
         self.minHashLength = minHashLength;
-        self.guards = [UInt32]();
+        self.guards = [Char]();
         self.salt = map(salt.unicodeScalars){ $0.value };
         self.seps = map(_seps.unicodeScalars){ $0.value };
         self.alphabet = unique( map(_alphabet.unicodeScalars){ $0.value } );
@@ -95,20 +97,15 @@ class Hashids
     {
         let trimmed = value.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
         let hash = map(trimmed.unicodeScalars){ $0.value };
-        return self._decode(hash);
+        return self.decode(hash);
     }
     
-    func encode_hex()
+    func decode(value:[Char]) -> [Int]
     {
-        
+        return self._decode(value);
     }
     
-    func decode_hex()
-    {
-        
-    }
-    
-    func _encode(numbers:[Int]) -> [UInt32]
+    private func _encode(numbers:[Int]) -> [Char]
     {
         var alphabet = self.alphabet;
         var numbers_hash_int = 0;
@@ -120,11 +117,13 @@ class Hashids
         
         let lottery = alphabet[numbers_hash_int % alphabet.count];
         var ret = [lottery];
+  
+        var lsalt = [Char]();
+        let (lsaltARange, lsaltRange) = _saltify(&lsalt, lottery, alphabet);
         
         for (index, value) in enumerate(numbers)
         {
-            let lsalt = ([lottery] + self.salt + alphabet)[0..<(alphabet.count)];
-            shuffle(&alphabet, lsalt);
+            shuffle(&alphabet, lsalt, lsaltRange);
             let last = _hash(value, alphabet);
             ret += last;
             
@@ -134,6 +133,8 @@ class Hashids
                 let seps_index = number % self.seps.count;
                 ret.append(self.seps[seps_index]);
             }
+            
+            lsalt.replaceRange(lsaltARange, with: alphabet);
         }
         
         let minLength:Int = numericCast(self.minHashLength);
@@ -163,45 +164,47 @@ class Hashids
             let excess = ret.count - half_length;
             if( excess > 0 )
             {
-                let start = excess>>1;
-                ret = [UInt32](ret[start..<(start+half_length)])
+                let start = excess >> 1;
+                ret = [Char](ret[start..<(start+half_length)])
             }
         }
         
         return ret;
     }
     
-    func _decode(hash:[UInt32]) -> [Int]
+    private func _decode(hash:[Char]) -> [Int]
     {
         var ret = [Int]();
         
         var alphabet = self.alphabet;
-
+        
         var hashes = split(hash, { contains(self.guards, $0) }, maxSplit: hash.count, allowEmptySlices: true);
-        
         let hashesCount = hashes.count, i = ((hashesCount == 2) || (hashesCount == 3)) ? 1 : 0;
-        
         let hash = hashes[i];
+        
         if(hash.count > 0)
         {
             let lottery = hash[0];
             let valuesHashes = hash[1..<hash.count];
-            var valueHashes = split(valuesHashes, { contains(self.seps, $0) }, maxSplit: valuesHashes.count, allowEmptySlices: true);
-            
+            let valueHashes = split(valuesHashes, { contains(self.seps, $0) }, maxSplit: valuesHashes.count, allowEmptySlices: true);
+
+            var lsalt = [Char]();
+            let (lsaltARange, lsaltRange) = _saltify(&lsalt, lottery, alphabet);
+
             for subHash in valueHashes
             {
-                let lsalt = ([lottery] + self.salt + alphabet)[0..<(alphabet.count)];
-                shuffle(&alphabet, lsalt);
+                shuffle(&alphabet, lsalt, lsaltRange);
                 ret.append(self._unhash(subHash, alphabet));
+                lsalt.replaceRange(lsaltARange, with: alphabet);
             }
         }
         
         return ret;
     }
     
-    func _hash(var number:Int, _ alphabet:[UInt32]) -> [UInt32]
+    private func _hash(var number:Int, _ alphabet:[Char]) -> [Char]
     {
-        var hash = [UInt32]();
+        var hash = [Char]();
         let length = alphabet.count
         
         do {
@@ -212,7 +215,7 @@ class Hashids
         return hash;
     }
 
-    func _unhash<T:CollectionType where T.Index == Int, T.Generator.Element == UInt32 >(hash:T, _ alphabet:[UInt32]) -> Int
+    private func _unhash<T:CollectionType where T.Index == Int, T.Generator.Element == Char >(hash:T, _ alphabet:[Char]) -> Int
     {
         var value:Double = 0;
 
@@ -234,6 +237,16 @@ class Hashids
         return Int(trunc(value));
     }
     
+    private func _saltify(inout salt:[Char], _ lottery:Char, _ alphabet:[Char]) -> (Range<Int>, Range<Int>)
+    {
+        salt.append(lottery);
+        salt = salt + self.salt;
+        salt = salt + alphabet;
+        let lsaltARange = (self.salt.count + 1)..<salt.count;
+        let lsaltRange = 0..<alphabet.count;
+        return (lsaltARange, lsaltRange);
+    }
+   
 }
 
 internal func contains<T:CollectionType where T.Generator.Element:Equatable>(a:T, e:T.Generator.Element) -> Bool
@@ -281,16 +294,21 @@ internal func difference<T:CollectionType where T.Generator.Element:Equatable>(a
         };
     }
 }
-
 internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Generator.Element == UInt32, T.Index == Int, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U)
 {
-    var sidx = countElements(source) - 1, scnt = countElements(salt), vidx = salt.startIndex, v = 0, _p = 0, _i = 0, _j = 0;
+    return shuffle(&source, salt, 0..<countElements(salt));
+}
+
+internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Generator.Element == UInt32, T.Index == Int, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U, saltRange:Range<Int>)
+{
+    let sidx0 = saltRange.startIndex, scnt = (saltRange.endIndex - saltRange.startIndex);
+    var sidx = countElements(source) - 1, v = 0, _p = 0;
     while(sidx > 0)
     {
         v = v % scnt;
-        _i = numericCast(salt[v]);
+        let _i:Int = numericCast(salt[sidx0 + v]);
         _p += _i;
-        _j = (_i + v + _p) % sidx;
+        let _j:Int = (_i + v + _p) % sidx;
         let tmp = source[sidx];
         source[sidx] = source[_j];
         source[_j] = tmp;
