@@ -166,7 +166,7 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
         }
         
         let lottery = alphabet[numbers_hash_int % alphabet.count];
-        var ret = [lottery];
+        var hash = [lottery];
   
         var lsalt = [Char]();
         let (lsaltARange, lsaltRange) = _saltify(&lsalt, lottery, alphabet);
@@ -174,14 +174,14 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
         for (index, value) in enumerate(numbers)
         {
             shuffle(&alphabet, lsalt, lsaltRange);
-            let last = _hash(value, alphabet);
-            ret += last;
+            let lastIndex = hash.endIndex;
+            _hash(&hash, value, alphabet);
             
             if(index + 1 < numbers.count)
             {
-                let number = value % (numericCast(last[0]) + index);
+                let number = value % (numericCast(hash[lastIndex]) + index);
                 let seps_index = number % self.seps.count;
-                ret.append(self.seps[seps_index]);
+                hash.append(self.seps[seps_index]);
             }
             
             lsalt.replaceRange(lsaltARange, with: alphabet);
@@ -189,37 +189,37 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
         
         let minLength:Int = numericCast(self.minHashLength);
         
-        if(ret.count < minLength)
+        if(hash.count < minLength)
         {
-            let guard_index = (numbers_hash_int + numericCast(ret[0])) % self.guards.count;
+            let guard_index = (numbers_hash_int + numericCast(hash[0])) % self.guards.count;
             let guard = self.guards[guard_index];
-            ret.insert(guard, atIndex: 0);
+            hash.insert(guard, atIndex: 0);
             
-            if(ret.count < minLength)
+            if(hash.count < minLength)
             {
-                let guard_index = (numbers_hash_int + numericCast(ret[2])) % self.guards.count;
+                let guard_index = (numbers_hash_int + numericCast(hash[2])) % self.guards.count;
                 let guard = self.guards[guard_index];
-                ret.append(guard);
+                hash.append(guard);
             }
         }
         
         let half_length = alphabet.count >> 1;
-        while( ret.count < minLength )
+        while( hash.count < minLength )
         {
             shuffle(&alphabet, alphabet);
             let lrange = 0..<half_length;
             let rrange = half_length..<(alphabet.count);
-            ret = alphabet[rrange] + ret + alphabet[lrange];
+            hash = alphabet[rrange] + hash + alphabet[lrange];
             
-            let excess = ret.count - minLength;
+            let excess = hash.count - minLength;
             if( excess > 0 )
             {
                 let start = excess >> 1;
-                ret = [Char](ret[start..<(start+minLength)])
+                hash = [Char](hash[start..<(start+minLength)])
             }
         }
         
-        return ret;
+        return hash;
     }
     
     private func _decode(hash:[Char]) -> [Int]
@@ -252,17 +252,13 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
         return ret;
     }
     
-    private func _hash(var number:Int, _ alphabet:[Char]) -> [Char]
+    private func _hash(inout hash:[Char], var _ number:Int, _ alphabet:[Char])
     {
-        var hash = [Char]();
-        let length = alphabet.count
-        
+        let length = alphabet.count, index = hash.count 1;
         do {
-            hash.insert(alphabet[number % length], atIndex: 0);
+            hash.insert(alphabet[number % length], atIndex: index);
             number = number / length;
         } while( number != 0 );
-        
-        return hash;
     }
 
     private func _unhash<U:CollectionType where U.Index == Int, U.Generator.Element == Char>(hash:U, _ alphabet:[Char]) -> Int
