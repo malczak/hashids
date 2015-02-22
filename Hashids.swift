@@ -8,15 +8,24 @@
 
 import Foundation
 
-class Hashids
+typealias Hashids = Hashids_<UInt32>
+
+struct HashidsOpts
 {
-    typealias Char = UInt32;
+    static var MIN_ALPHABET_LENGTH:Int = 16;
+        
+    static var SEP_DIV:Double = 3.5;
+        
+    static var GUARD_DIV:Double = 12;
     
-    private let MIN_ALPHABET_LENGTH:Int = 16;
+    static var ALPHABET:String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     
-    private let SEP_DIV:Double = 3.5;
-    
-    private let GUARD_DIV:Double = 12;
+    static var SEPARATORS:String = "cfhistuCFHISTU";
+}
+
+class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
+{
+    typealias Char = T;
     
     private var minHashLength:UInt;
     
@@ -31,14 +40,14 @@ class Hashids
 
     init(salt:String!, minHashLength:UInt = 0, alphabet:String? = nil)
     {
-        var _alphabet = (alphabet != nil) ? alphabet! : "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        var _seps = "cfhistuCFHISTU";
+        var _alphabet = (alphabet != nil) ? alphabet! : HashidsOpts.ALPHABET;
+        var _seps = HashidsOpts.SEPARATORS;
         
         self.minHashLength = minHashLength;
         self.guards = [Char]();
-        self.salt = map(salt.unicodeScalars){ $0.value };
-        self.seps = map(_seps.unicodeScalars){ $0.value };
-        self.alphabet = unique( map(_alphabet.unicodeScalars){ $0.value } );
+        self.salt = map(salt.unicodeScalars){ numericCast($0.value) };
+        self.seps = map(_seps.unicodeScalars){ numericCast($0.value) };
+        self.alphabet = unique( map(_alphabet.unicodeScalars){ numericCast($0.value) } );
         
         self.seps = intersection(self.alphabet, self.seps);
         self.alphabet = difference(self.alphabet, self.seps);
@@ -48,9 +57,9 @@ class Hashids
         let sepsLength = self.seps.count;
         let alphabetLength = self.alphabet.count;
         
-        if ( (0 == sepsLength) || (Double(alphabetLength) / Double(sepsLength) > self.SEP_DIV) ) {
+        if ( (0 == sepsLength) || (Double(alphabetLength) / Double(sepsLength) > HashidsOpts.SEP_DIV) ) {
             
-            var newSepsLength = Int(ceil(Double(alphabetLength) / self.SEP_DIV));
+            var newSepsLength = Int(ceil(Double(alphabetLength) / HashidsOpts.SEP_DIV));
             
             if(1 == newSepsLength) {
                 newSepsLength += 1;
@@ -71,7 +80,7 @@ class Hashids
         
         shuffle(&self.alphabet, self.salt);
         
-        let guard = Int(ceil(Double(alphabetLength)/self.GUARD_DIV));
+        let guard = Int(ceil(Double(alphabetLength)/HashidsOpts.GUARD_DIV));
         if(alphabetLength < 3)
         {
             let seps_guard = advance(self.seps.startIndex,guard);
@@ -90,13 +99,17 @@ class Hashids
     func encode(value:Int...) -> String?
     {
         let ret = _encode(value);
-        return ret.reduce(String(), combine: { (var so, i) in so.append(UnicodeScalar(i)); return so });
+        return ret.reduce(String(), combine: { (var so, i) in
+            let scalar:UInt32 = numericCast(i);
+            so.append(UnicodeScalar(scalar));
+            return so
+        });
     }
     
     func decode(value:String!) -> [Int]
     {
         let trimmed = value.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
-        let hash = map(trimmed.unicodeScalars){ $0.value };
+        let hash:[Char] = map(trimmed.unicodeScalars){ numericCast($0.value) };
         return self.decode(hash);
     }
     
@@ -215,7 +228,7 @@ class Hashids
         return hash;
     }
 
-    private func _unhash<T:CollectionType where T.Index == Int, T.Generator.Element == Char >(hash:T, _ alphabet:[Char]) -> Int
+    private func _unhash<U:CollectionType where U.Index == Int, U.Generator.Element == Char>(hash:U, _ alphabet:[Char]) -> Int
     {
         var value:Double = 0;
 
@@ -224,9 +237,10 @@ class Hashids
         {
             let alphabetLength = alphabet.count;
             
-            for (index, token) in enumerate(hash)
+            for index in hash.startIndex..<hash.endIndex
             {
-                if let token_index = find(alphabet, token)
+                let token = hash[index];
+                if let token_index = find(alphabet, token as Char)
                 {
                     let mul = pow(Double(alphabetLength), Double(hashLength - index - 1));
                     value += Double(token_index) * mul;
@@ -294,12 +308,12 @@ internal func difference<T:CollectionType where T.Generator.Element:Equatable>(a
         };
     }
 }
-internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Generator.Element == UInt32, T.Index == Int, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U)
+internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Index == Int, T.Generator.Element:UnsignedIntegerType, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U)
 {
     return shuffle(&source, salt, 0..<countElements(salt));
 }
 
-internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Generator.Element == UInt32, T.Index == Int, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U, saltRange:Range<Int>)
+internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Index == Int, T.Generator.Element:UnsignedIntegerType, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U, saltRange:Range<Int>)
 {
     let sidx0 = saltRange.startIndex, scnt = (saltRange.endIndex - saltRange.startIndex);
     var sidx = countElements(source) - 1, v = 0, _p = 0;
