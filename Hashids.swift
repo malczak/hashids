@@ -3,19 +3,23 @@
 //  HashIds
 //
 //  Created by malczak on 04/02/15.
-//  Copyright (c) 2015 thepiratecat. All rights reserved.
+//  Copyright (c) 2015 thepiratecat.
+//
+//  Licensed under the MIT license.
 //
 
 import Foundation
 
-typealias Hashids = Hashids_<UInt32>
+// MARK: Hashids options
 
 struct HashidsOpts
 {
+    static let VERSION = "1.0.0";
+    
     static var MIN_ALPHABET_LENGTH:Int = 16;
-        
+    
     static var SEP_DIV:Double = 3.5;
-        
+    
     static var GUARD_DIV:Double = 12;
     
     static var ALPHABET:String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -23,7 +27,32 @@ struct HashidsOpts
     static var SEPARATORS:String = "cfhistuCFHISTU";
 }
 
-class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
+
+// MARK: Hashids protocol
+
+protocol HashidsGenerator
+{
+    typealias Char;
+    
+    func encode(value:Int...) -> String?
+    
+    func encode(values:[Int]) -> String?
+    
+    func decode(value:String!) -> [Int]
+    
+    func decode(value:[Char]) -> [Int]
+    
+}
+
+
+// MARK: Hashids class
+
+typealias Hashids = Hashids_<UInt32>
+
+
+// MARK: Hashids generic class
+
+class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
 {
     typealias Char = T;
     
@@ -37,7 +66,6 @@ class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
     
     private var guards:[Char];
     
-
     init(salt:String!, minHashLength:UInt = 0, alphabet:String? = nil)
     {
         var _alphabet = (alphabet != nil) ? alphabet! : HashidsOpts.ALPHABET;
@@ -95,17 +123,24 @@ class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
             self.alphabet.removeRange(range);
         }
     }
+    
+    // MARK: public api
 
     func encode(value:Int...) -> String?
     {
-        let ret = _encode(value);
+        return encode(value);
+    }
+    
+    func encode(values:[Int]) -> String?
+    {
+        let ret = _encode(values);
         return ret.reduce(String(), combine: { (var so, i) in
             let scalar:UInt32 = numericCast(i);
             so.append(UnicodeScalar(scalar));
             return so
         });
     }
-    
+        
     func decode(value:String!) -> [Int]
     {
         let trimmed = value.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
@@ -117,6 +152,8 @@ class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
     {
         return self._decode(value);
     }
+    
+    // MARK: private funcitons 
     
     private func _encode(numbers:[Int]) -> [Char]
     {
@@ -174,11 +211,11 @@ class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
             let rrange = half_length..<(alphabet.count);
             ret = alphabet[rrange] + ret + alphabet[lrange];
             
-            let excess = ret.count - half_length;
+            let excess = ret.count - minLength;
             if( excess > 0 )
             {
                 let start = excess >> 1;
-                ret = [Char](ret[start..<(start+half_length)])
+                ret = [Char](ret[start..<(start+minLength)])
             }
         }
         
@@ -262,6 +299,8 @@ class Hashids_<T where T:Equatable, T:IntegerType, T:UnsignedIntegerType>
     }
    
 }
+
+// MARK: Internal functions
 
 internal func contains<T:CollectionType where T.Generator.Element:Equatable>(a:T, e:T.Generator.Element) -> Bool
 {
