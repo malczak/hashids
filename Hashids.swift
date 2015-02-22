@@ -1,10 +1,8 @@
 //
 //  HashIds.swift
-//  HashIds
+//  http://hashids.org
 //
-//  Created by malczak on 04/02/15.
-//  Copyright (c) 2015 thepiratecat.
-//
+//  Author https://github.com/malczak
 //  Licensed under the MIT license.
 //
 
@@ -140,7 +138,7 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
             return so
         });
     }
-        
+    
     func decode(value:String!) -> [Int]
     {
         let trimmed = value.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
@@ -254,7 +252,7 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
     
     private func _hash(inout hash:[Char], var _ number:Int, _ alphabet:[Char])
     {
-        let length = alphabet.count, index = hash.count 1;
+        let length = alphabet.count, index = hash.count;
         do {
             hash.insert(alphabet[number % length], atIndex: index);
             number = number / length;
