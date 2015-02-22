@@ -12,10 +12,16 @@ var hashids = Hashids(salt:"this is my salt");
 var hash = hashids.encode(1, 2, 3); // hash:"laHquq"
 var values = hashids.decode(s!); // values:[1,2,3]
 ```
-Example with custom alphabet 
+Example with custom alphabet and minimum hash length
 ```swift
 var hashids = Hashids(salt:"this is my salt", minHashLength:8, alphabet:"abcdefghij1234567890");
 var hash = hashids.encode(1, 2, 3); // hash:"514cdi42"
+var values = hashids.decode(s!); // values:[1,2,3]
+```
+Example with UTF8 alphabet 
+```swift
+var hashids = Hashids(salt:"this is my salt", minHashLength:0, alphabet:"▁▂▃▄▅▆▇█");
+var hash = hashids.encode(1, 2, 3); // hash:"▅▅▂▄▃▆"
 var values = hashids.decode(s!); // values:[1,2,3]
 ```
 
