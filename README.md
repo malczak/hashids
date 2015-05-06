@@ -1,6 +1,6 @@
 ## Hashids.swift
 ----
-A Swift class to generate YouTube-like ids from numbers. 
+A Swift class to generate YouTube-like ids from numbers.
 
 Ported from [Hashids.php](https://github.com/ivanakimov/hashids.php) by [ivanakimov](https://github.com/ivanakimov)
 
@@ -10,7 +10,7 @@ Read documentation at [http://hashids.org/php](http://hashids.org/php)
 ```swift
 var hashids = Hashids(salt:"this is my salt");
 var hash = hashids.encode(1, 2, 3); // hash:"laHquq"
-var values = hashids.decode(s!); // values:[1,2,3]
+var values = hashids.decode(hash!); // values:[1,2,3]
 ```
 Example with custom alphabet and minimum hash length
 ```swift
@@ -22,7 +22,7 @@ Example with UTF8 alphabet
 ```swift
 var hashids = Hashids(salt:"this is my salt", minHashLength:0, alphabet:"▁▂▃▄▅▆▇█");
 var hash = hashids.encode(1, 2, 3); // hash:"▅▅▂▄▃▆"
-var values = hashids.decode(s!); // values:[1,2,3]
+var values = hashids.decode(hash!); // values:[1,2,3]
 ```
 
 #### Notes

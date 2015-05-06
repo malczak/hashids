@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import hashids
 
 class HashIdsTests: XCTestCase
 {
@@ -55,7 +56,7 @@ class HashIdsTests: XCTestCase
         {
             if let hash = hashids.encode(i)
             {
-                if( countElements(hash) > minHashLength )
+                if( count(hash) > minHashLength )
                 {
                     minCount += 1;
                 }
