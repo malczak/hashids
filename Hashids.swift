@@ -226,7 +226,7 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
         
         var alphabet = self.alphabet;
         
-        var hashes = split(hash, { contains(self.guards, $0) }, maxSplit: hash.count, allowEmptySlices: true);
+        var hashes = split(hash, maxSplit: hash.count, allowEmptySlices: true, isSeparator: { contains(self.guards, $0) });
         let hashesCount = hashes.count, i = ((hashesCount == 2) || (hashesCount == 3)) ? 1 : 0;
         let hash = hashes[i];
         
@@ -234,7 +234,7 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
         {
             let lottery = hash[0];
             let valuesHashes = hash[1..<hash.count];
-            let valueHashes = split(valuesHashes, { contains(self.seps, $0) }, maxSplit: valuesHashes.count, allowEmptySlices: true);
+            let valueHashes = split(valuesHashes, maxSplit: valuesHashes.count, allowEmptySlices: true, isSeparator: { contains(self.seps, $0) });
 
             var lsalt = [Char]();
             let (lsaltARange, lsaltRange) = _saltify(&lsalt, lottery, alphabet);
@@ -263,7 +263,7 @@ class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGenerator
     {
         var value:Double = 0;
 
-        let hashLength = countElements(hash)
+        let hashLength = count(hash)
         if (hashLength > 0)
         {
             let alphabetLength = alphabet.count;
@@ -343,13 +343,13 @@ internal func difference<T:CollectionType where T.Generator.Element:Equatable>(a
 }
 internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Index == Int, T.Generator.Element:UnsignedIntegerType, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U)
 {
-    return shuffle(&source, salt, 0..<countElements(salt));
+    return shuffle(&source, salt, 0..<count(salt));
 }
 
 internal func shuffle<T:MutableCollectionType, U:CollectionType where T.Index == Int, T.Generator.Element:UnsignedIntegerType, T.Generator.Element == U.Generator.Element, T.Index == U.Index>(inout source:T, salt:U, saltRange:Range<Int>)
 {
     let sidx0 = saltRange.startIndex, scnt = (saltRange.endIndex - saltRange.startIndex);
-    var sidx = countElements(source) - 1, v = 0, _p = 0;
+    var sidx = count(source) - 1, v = 0, _p = 0;
     while(sidx > 0)
     {
         v = v % scnt;
