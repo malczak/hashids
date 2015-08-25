@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import hashids
+import Hashids
 
 class HashIdsTests: XCTestCase
 {
