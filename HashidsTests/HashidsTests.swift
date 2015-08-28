@@ -7,14 +7,14 @@
 //
 
 import XCTest
-import hashids
+import Hashids
 
 class HashIdsTests: XCTestCase
 {
     
     func testSimpleHash()
     {
-        var hashids = Hashids(salt: "this is my salt");
+        let hashids = Hashids(salt: "this is my salt");
         let s = hashids.encode(1, 2, 3);
         XCTAssert(s! == "laHquq")
     }
@@ -30,7 +30,7 @@ class HashIdsTests: XCTestCase
         ];
         
         var equalCount = 0;
-        var hashids = Hashids(salt: "this is my salt");
+        let hashids = Hashids(salt: "this is my salt");
         for expectedHash in knownHashes.keys
         {
             let values = knownHashes[expectedHash];
@@ -50,13 +50,13 @@ class HashIdsTests: XCTestCase
     {
         let minHashLength = 20;
         let testRange = 1...20;
-        var hashids = Hashids(salt: "this is my salt", minHashLength: numericCast(minHashLength));
+        let hashids = Hashids(salt: "this is my salt", minHashLength: numericCast(minHashLength));
         var minCount = 0;
         for i in testRange
         {
             if let hash = hashids.encode(i)
             {
-                if( count(hash) > minHashLength )
+                if( hash.characters.count > minHashLength )
                 {
                     minCount += 1;
                 }
@@ -72,16 +72,16 @@ class HashIdsTests: XCTestCase
     func testInstances()
     {
         let input = [1,2,3,1000];
-        var hashids1 = Hashids(salt: "this is my salt", minHashLength: 9, alphabet: "abcdef0123456789");
-        var hashids2 = Hashids(salt: "this is my salt", minHashLength: 9, alphabet: "abcdef0123456789");
-        var hash = hashids1.encode(input);
-        var values = hashids2.decode(hash);
+        let hashids1 = Hashids(salt: "this is my salt", minHashLength: 9, alphabet: "abcdef0123456789");
+        let hashids2 = Hashids(salt: "this is my salt", minHashLength: 9, alphabet: "abcdef0123456789");
+        let hash = hashids1.encode(input);
+        let values = hashids2.decode(hash);
         XCTAssertEqual(input, values);
     }
     
     func testDifferentSalts() {
-        var hashids1 = Hashids(salt: "this is my salt");
-        var hashids2 = Hashids(salt: "this is not my salt");
+        let hashids1 = Hashids(salt: "this is my salt");
+        let hashids2 = Hashids(salt: "this is not my salt");
         let input = [1,2,3];
         let hash = hashids1.encode(input);
         let values = hashids2.decode(hash!);
@@ -90,34 +90,33 @@ class HashIdsTests: XCTestCase
     
     func testUInt8Alphabet()
     {
-        var alphabet = "abcdef0123456789";
+        let alphabet = "abcdef0123456789";
         let input = [1203,311,331,423];
-        var hashids = Hashids_<UInt8>(salt: "this is my salt", minHashLength: 0, alphabet: alphabet);
-        var hash = hashids.encode(input);
-        var values = hashids.decode(hash!);
+        let hashids = Hashids_<UInt8>(salt: "this is my salt", minHashLength: 0, alphabet: alphabet);
+        let hash = hashids.encode(input);
+        let values = hashids.decode(hash!);
         XCTAssertEqual(input, values);
     }
     
     func testEmojiAlphabet()
     {
-        var alphabet = "🐶🐭🐹🐷🐮🐰🐹🐸";
+        let alphabet = "🐶🐭🐹🐷🐮🐰🐹🐸";
         let input = [300122,12,3,3112,12,1000001201];
-        var hashids = Hashids(salt: "this is my salt", minHashLength: 0, alphabet: alphabet);
-        var hash = hashids.encode(input);
-        var values = hashids.decode(hash!);
+        let hashids = Hashids(salt: "this is my salt", minHashLength: 0, alphabet: alphabet);
+        let hash = hashids.encode(input);
+        let values = hashids.decode(hash!);
         XCTAssertEqual(input, values);
     }
     
     func testBigDataSet()
     {
-        var alphabet = "abcdef0123456789";
         var input = [Int]();
-        for i in 0..<100 {
+        for _ in 0..<100 {
             input.append(random());
         }
-        var hashids = Hashids(salt: "this is my salt");
-        var hash = hashids.encode(input);
-        var values = hashids.decode(hash!);
+        let hashids = Hashids(salt: "this is my salt");
+        let hash = hashids.encode(input);
+        let values = hashids.decode(hash!);
         XCTAssertEqual(input, values);
     }
     
