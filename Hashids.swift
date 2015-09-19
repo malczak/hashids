@@ -144,7 +144,7 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGener
         let trimmed = value.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
         let hash:[Char] = trimmed.unicodeScalars.map(){ numericCast($0.value) };
         return self.decode(hash);
-    }
+    }   
     
     public func decode(value:[Char]) -> [Int]
     {
@@ -267,15 +267,16 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGener
         if (hashLength > 0)
         {
             let alphabetLength = alphabet.count;
-            
+            var zeroIndex = 0;
             for index in hash.startIndex..<hash.endIndex
             {
                 let token = hash[index];
                 if let token_index = alphabet.indexOf(token as Char)
                 {
-                    let mul = pow(Double(alphabetLength), Double(hashLength - index - 1));
+                    let mul = pow(Double(alphabetLength), Double(hashLength - zeroIndex - 1));
                     value += Double(token_index) * mul;
                 }
+                zeroIndex += 1;
             }
         }
         

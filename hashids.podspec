@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "hashids"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.license      = "MIT"
   s.homepage     = "http://hashids.org"
   s.summary      = "Small open-source library that generates short, unique, non-sequential ids from numbers."
