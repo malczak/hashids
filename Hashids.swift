@@ -263,20 +263,18 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGener
     {
         var value:Double = 0;
 
-        let hashLength = hash.count;
+        var hashLength = hash.count;
         if (hashLength > 0)
         {
             let alphabetLength = alphabet.count;
-            var zeroIndex = 0;
-            for index in hash.startIndex..<hash.endIndex
-            {
-                let token = hash[index];
+            value = hash.reduce(0) { value, token in
+                var tokenValue = 0.0;
                 if let token_index = alphabet.indexOf(token as Char)
                 {
-                    let mul = pow(Double(alphabetLength), Double(hashLength - zeroIndex - 1));
-                    value += Double(token_index) * mul;
+                    let mul = pow(Double(alphabetLength), Double(--hashLength));
+                    tokenValue = Double(token_index) * mul;
                 }
-                zeroIndex += 1;
+                return value + tokenValue;
             }
         }
         
