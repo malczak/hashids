@@ -229,11 +229,12 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType> : HashidsGener
         var hashes = hash.split( hash.count, allowEmptySlices: true) { contains(self.guards, $0) };
         let hashesCount = hashes.count, i = ((hashesCount == 2) || (hashesCount == 3)) ? 1 : 0;
         let hash = hashes[i];
-        
+        let hashStartIndex = hash.startIndex
+
         if(hash.count > 0)
         {
-            let lottery = hash[0];
-            let valuesHashes = hash[1..<hash.count];
+            let lottery = hash[hashStartIndex];
+            let valuesHashes = hash[(hashStartIndex + 1)..<(hashStartIndex + hash.count)];
 
             let valueHashes = valuesHashes.split(valuesHashes.count, allowEmptySlices: true) { contains(self.seps, $0) };
             var lsalt = [Char]();
