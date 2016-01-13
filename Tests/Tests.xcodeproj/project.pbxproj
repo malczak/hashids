@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D7B6914D4BF3B2FF9323FC5 /* Pods_HashidsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B71F1EE36743B6EEFE28E45D /* Pods_HashidsTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		3286DD561AF8F98C00056C61 /* HashidsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3286DD551AF8F98C00056C61 /* HashidsTests.swift */; };
+		C207BB2CB986C80E2E2E06C9 /* Pods_HashidsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 285C8D91955A99B4C4B30567 /* Pods_HashidsTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2E97CBF228EF01CC5454A9E2 /* Pods-HashidsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HashidsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HashidsTests/Pods-HashidsTests.release.xcconfig"; sourceTree = "<group>"; };
+		23D2A9AC2072357566155359 /* Pods-HashidsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HashidsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HashidsTests/Pods-HashidsTests.release.xcconfig"; sourceTree = "<group>"; };
+		285C8D91955A99B4C4B30567 /* Pods_HashidsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HashidsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3286DD501AF8F98C00056C61 /* HashidsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HashidsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3286DD541AF8F98C00056C61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3286DD551AF8F98C00056C61 /* HashidsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashidsTests.swift; sourceTree = "<group>"; };
-		56F7B5A3ECAC0D9BBD232CA2 /* Pods-HashidsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HashidsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HashidsTests/Pods-HashidsTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B71F1EE36743B6EEFE28E45D /* Pods_HashidsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HashidsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		74AC1373CDA6AA6F78CE4B09 /* Pods-HashidsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HashidsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HashidsTests/Pods-HashidsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,7 +25,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D7B6914D4BF3B2FF9323FC5 /* Pods_HashidsTests.framework in Frameworks */,
+				C207BB2CB986C80E2E2E06C9 /* Pods_HashidsTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,8 +37,8 @@
 			children = (
 				3286DD521AF8F98C00056C61 /* HashidsTests */,
 				3286DD511AF8F98C00056C61 /* Products */,
-				E7B1C01C49DC85CFB2AA8E02 /* Pods */,
-				7DC443353073FE614A952264 /* Frameworks */,
+				A3D6BFF07982340EA9D92840 /* Pods */,
+				DD10399919F4D38F1EF0D00F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,21 +67,21 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		7DC443353073FE614A952264 /* Frameworks */ = {
+		A3D6BFF07982340EA9D92840 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B71F1EE36743B6EEFE28E45D /* Pods_HashidsTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		E7B1C01C49DC85CFB2AA8E02 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				56F7B5A3ECAC0D9BBD232CA2 /* Pods-HashidsTests.debug.xcconfig */,
-				2E97CBF228EF01CC5454A9E2 /* Pods-HashidsTests.release.xcconfig */,
+				74AC1373CDA6AA6F78CE4B09 /* Pods-HashidsTests.debug.xcconfig */,
+				23D2A9AC2072357566155359 /* Pods-HashidsTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		DD10399919F4D38F1EF0D00F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				285C8D91955A99B4C4B30567 /* Pods_HashidsTests.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -91,12 +91,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3286DD571AF8F98C00056C61 /* Build configuration list for PBXNativeTarget "HashidsTests" */;
 			buildPhases = (
-				347D1F952E307A8EC90A85B8 /* Check Pods Manifest.lock */,
+				F318A59D8DC974F10F9DC6AE /* Check Pods Manifest.lock */,
 				3286DD4C1AF8F98C00056C61 /* Sources */,
 				3286DD4D1AF8F98C00056C61 /* Frameworks */,
 				3286DD4E1AF8F98C00056C61 /* Resources */,
-				0C7E314833B1206E89FD2E7E /* Embed Pods Frameworks */,
-				5B765C813067F1A6A228455F /* Copy Pods Resources */,
+				4344837FAA993F27C81E5EF0 /* Embed Pods Frameworks */,
+				5FAF89F52271BA716114CAE8 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -149,7 +149,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0C7E314833B1206E89FD2E7E /* Embed Pods Frameworks */ = {
+		4344837FAA993F27C81E5EF0 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -164,22 +164,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HashidsTests/Pods-HashidsTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		347D1F952E307A8EC90A85B8 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		5B765C813067F1A6A228455F /* Copy Pods Resources */ = {
+		5FAF89F52271BA716114CAE8 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -192,6 +177,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HashidsTests/Pods-HashidsTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F318A59D8DC974F10F9DC6AE /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -224,7 +224,7 @@
 		};
 		3286DD581AF8F98C00056C61 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 56F7B5A3ECAC0D9BBD232CA2 /* Pods-HashidsTests.debug.xcconfig */;
+			baseConfigurationReference = 74AC1373CDA6AA6F78CE4B09 /* Pods-HashidsTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -276,7 +276,7 @@
 		};
 		3286DD591AF8F98C00056C61 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2E97CBF228EF01CC5454A9E2 /* Pods-HashidsTests.release.xcconfig */;
+			baseConfigurationReference = 23D2A9AC2072357566155359 /* Pods-HashidsTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

@@ -5,7 +5,7 @@ use_frameworks!
 
 target 'HashidsTests' do
 
-  pod 'hashids', :path => "./../"
+  pod 'Hashids-Swift', :path => "./../"
 
 end
 

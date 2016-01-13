@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 
-  s.name         = "hashids"
+  s.name         = "Hashids-Swift"
   s.version      = "0.3.0"
   s.license      = "MIT"
   s.homepage     = "http://hashids.org"
