@@ -30,7 +30,7 @@ public struct HashidsOptions {
 // MARK: Hashids protocol
 
 public protocol HashidsGenerator {
-  typealias Char
+  associatedtype Char
 
   func encode(value: Int...) -> String?
 
@@ -130,8 +130,8 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType>: HashidsGenera
 
   public func encode(values: [Int]) -> String? {
     let ret = _encode(values)
-    return ret.reduce(String(), combine: {
-      (var so, i) in
+    return ret.reduce(String(), combine: { ( so, i) in
+      var so = so
       let scalar: UInt32 = numericCast(i)
       so.append(UnicodeScalar(scalar))
       return so
@@ -243,7 +243,8 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType>: HashidsGenera
     return ret
   }
 
-  private func _hash(inout hash: [Char], var _ number: Int, _ alphabet: [Char]) {
+  private func _hash(inout hash: [Char], _ number: Int, _ alphabet: [Char]) {
+    var number = number
     let length = alphabet.count, index = hash.count
     repeat {
       hash.insert(alphabet[number % length], atIndex: index)
@@ -261,7 +262,8 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType>: HashidsGenera
         value, token in
         var tokenValue = 0.0
         if let token_index = alphabet.indexOf(token as Char) {
-          let mul = pow(Double(alphabetLength), Double(--hashLength))
+          hashLength -= 1
+          let mul = pow(Double(alphabetLength), Double(hashLength))
           tokenValue = Double(token_index) * mul
         }
         return value + tokenValue
@@ -299,7 +301,7 @@ internal func transform<T:CollectionType where T.Generator.Element:Equatable>(a:
 
 internal func unique<T:CollectionType where T.Generator.Element:Equatable>(a: T) -> [T.Generator.Element] {
   return transform(a, a) {
-    (var c, a, b, e) in
+    ( c, a, b, e) in
     if !contains(c, e) {
       c.append(e)
     }
@@ -308,7 +310,7 @@ internal func unique<T:CollectionType where T.Generator.Element:Equatable>(a: T)
 
 internal func intersection<T:CollectionType where T.Generator.Element:Equatable>(a: T, _ b: T) -> [T.Generator.Element] {
   return transform(a, b) {
-    (var c, a, b, e) in
+    ( c, a, b, e) in
     if contains(b, e) {
       c.append(e)
     }
@@ -317,7 +319,7 @@ internal func intersection<T:CollectionType where T.Generator.Element:Equatable>
 
 internal func difference<T:CollectionType where T.Generator.Element:Equatable>(a: T, _ b: T) -> [T.Generator.Element] {
   return transform(a, b) {
-    (var c, a, b, e) in
+    ( c, a, b, e) in
     if !contains(b, e) {
       c.append(e)
     }
