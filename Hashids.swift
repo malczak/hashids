@@ -31,15 +31,23 @@ public struct HashidsOptions {
 
 public protocol HashidsGenerator {
   associatedtype Char
-
+  
+  func encode(value: Int64...) -> String?
+  
+  func encode(values: [Int64]) -> String?
+  
   func encode(value: Int...) -> String?
 
   func encode(values: [Int]) -> String?
-
+  
   func decode(value: String!) -> [Int]
 
   func decode(value: [Char]) -> [Int]
-
+  
+  func decode64(value: String) -> [Int64]
+  
+  func decode64(value: [Char]) -> [Int64]
+  
 }
 
 
@@ -123,7 +131,15 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType>: HashidsGenera
   }
 
   // MARK: public api
-
+  
+  public func encode(value: Int64...) -> String? {
+    return encode(value)
+  }
+  
+  public func encode(values: [Int64]) -> String? {
+    return encode(values.map { Int($0) })
+  }
+  
   public func encode(value: Int...) -> String? {
     return encode(value)
   }
@@ -150,6 +166,14 @@ public class Hashids_<T where T:Equatable, T:UnsignedIntegerType>: HashidsGenera
     return self._decode(value)
   }
 
+  public func decode64(value: String) -> [Int64] {
+    return self.decode(value).map { Int64($0) }
+  }
+  
+  public func decode64(value: [Char]) -> [Int64] {
+    return self.decode(value).map { Int64($0) }
+  }
+  
   // MARK: private funcitons
 
   private func _encode(numbers: [Int]) -> [Char] {

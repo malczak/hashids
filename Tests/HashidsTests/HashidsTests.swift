@@ -123,5 +123,13 @@ class HashIdsTests: XCTestCase {
     let values = hashids.decode(hash!)
     XCTAssertEqual(input, values)
   }
+  
+  func testInt64() {
+    let input: Int64 = 111_111_111_1112
+    let hashids = Hashids(salt: "this is my salt")
+    let hash = hashids.encode(input)
+    let values = hashids.decode64(hash!)
+    XCTAssertEqual(input, values.first)
+  }
 
 }
