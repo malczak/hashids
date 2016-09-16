@@ -34,6 +34,8 @@ Generic version ```Hashids_<T>``` can be used for both ASCII and UTF alphabets. 
 * ```Hashids_<UInt16>``` UTF16, uses ```String.UTF16View```
 * ```Hashids_<UInt32>``` Unicode, uses ```String.UnicodeScalarView```
 
+##### Swift 2.3
+For Swift 2.3 (2) version checkout branch [swift-2.3](https://github.com/malczak/hashids/tree/swift-2.3)
 
 #### License
 
