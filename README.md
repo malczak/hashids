@@ -2,6 +2,8 @@
 ----
 A Swift class to generate YouTube-like ids from numbers.
 
+*This is Swift 2.3 version - checkout master for Swift 3 support*
+
 Ported from [Hashids.php](https://github.com/ivanakimov/hashids.php) by [ivanakimov](https://github.com/ivanakimov)
 
 Read documentation at [http://hashids.org/php](http://hashids.org/php)
