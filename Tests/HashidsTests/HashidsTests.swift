@@ -58,6 +58,30 @@ class HashIdsTests: XCTestCase {
     XCTAssertEqual(equalCount, knownHashes.count)
   }
 
+  func testKnownHashesWithHashLengthAndAlphabet() {
+      // known hashes where generated with js Hashids implementation
+      // http://codepen.io/anon/pen/MbmpJP
+      let knownHashes: [String:[Int]] = [
+          "GlaHquq0": [1, 2, 3],
+          "gB0NV05e": [1],
+          "xJ3MBFkB3PO": [123456, 123456789],
+          "NZFzBrjhl": [10, 123456, 1]
+      ]
+
+      var equalCount = 0
+      let hashids = Hashids(salt: "this is my salt", minHashLength: 8, alphabet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+      for expectedHash in knownHashes.keys {
+          let values = knownHashes[expectedHash]
+          if let hash = hashids.encode(values!) {
+              if (hash == expectedHash) {
+                  equalCount += 1
+              }
+          }
+      }
+      
+      XCTAssertEqual(equalCount, knownHashes.count)
+  }
+
   func testHashMinLength() {
     let minHashLength = 20
     let testRange = 1 ... 20
