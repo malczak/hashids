@@ -227,7 +227,7 @@ open class Hashids_<T>: HashidsGenerator where T:Equatable, T:UnsignedInteger {
       let rrange = Range<Int>(half_length ..< (alphabet.count))
       let alphabet_right = alphabet[rrange]
       let alphabet_left = alphabet[lrange]
-      hash = Array<Char>(alphabet_left) + hash + Array<Char>(alphabet_right)
+      hash = Array<Char>(alphabet_right) + hash + Array<Char>(alphabet_left)
 
       let excess = hash.count - minLength
       if excess > 0 {
