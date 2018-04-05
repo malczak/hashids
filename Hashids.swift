@@ -58,7 +58,7 @@ public typealias Hashids = Hashids_<UInt32>
 
 // MARK: Hashids generic class
 
-open class Hashids_<T>: HashidsGenerator where T:Equatable, T:UnsignedInteger {
+open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
   public typealias Char = T
 
   fileprivate var minHashLength: UInt
@@ -360,6 +360,8 @@ internal func shuffle<T:MutableCollection, U:Collection>(_ source: inout T, _ sa
 
 internal func shuffle<T:MutableCollection, U:Collection>(_ source: inout T, _ salt: U, _ saltRange: Range<Int>) where T.Index == Int, T.Iterator.Element:UnsignedInteger, T.Iterator.Element == U.Iterator.Element, T.Index == U.Index {
   let sidx0 = saltRange.lowerBound, scnt = (saltRange.upperBound - saltRange.lowerBound)
+  guard scnt != 0 else { return }
+  
   var sidx: Int = numericCast(source.count) - 1, v = 0, _p = 0
   while sidx > 0 {
     v = v % scnt

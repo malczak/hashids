@@ -11,6 +11,16 @@ import Hashids_Swift
 
 class HashIdsTests: XCTestCase {
 
+  func testEmptySalt() {
+    let input = [12, 45, 11]
+    let hashids = Hashids(salt: "")
+    let s = hashids.encode(input)
+    XCTAssertNotNil(s)
+    
+    let i = hashids.decode(s!)
+    XCTAssert(input == i)
+  }
+    
   func testSimpleHash() {
     let hashids = Hashids(salt: "this is my salt")
     let s = hashids.encode(1, 2, 3)
@@ -89,7 +99,7 @@ class HashIdsTests: XCTestCase {
     var minCount = 0
     for i in testRange {
       if let hash = hashids.encode(i) {
-        if (hash.characters.count > minHashLength) {
+        if (hash.count > minHashLength) {
           minCount += 1
         }
       } else {
