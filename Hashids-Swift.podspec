@@ -8,10 +8,9 @@ Pod::Spec.new do |s|
   s.author       = { "Matt" => "mateusz@malczak.info" }
   s.source       = { :git => "https://github.com/malczak/hashids.git", :tag => s.version.to_s }
 
-  s.platform     = :ios, "11.0"
+  s.source_files = "Sources/hashids/*"
 
-  s.source_files  = "*.swift"
-  s.exclude_files = "*Tests.swift"
+  s.platform     = :ios, "11.0"
 
   s.requires_arc = true
 end
