@@ -223,8 +223,8 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
     let half_length = alphabet.count >> 1
     while hash.count < minLength {
       shuffle(&alphabet, alphabet)
-      let lrange = Range<Int>(0 ..< half_length)
-      let rrange = Range<Int>(half_length ..< (alphabet.count))
+      let lrange = 0 ..< half_length
+      let rrange = half_length ..< (alphabet.count)
       let alphabet_right = alphabet[rrange]
       let alphabet_left = alphabet[lrange]
       hash = Array<Char>(alphabet_right) + hash + Array<Char>(alphabet_left)
@@ -289,7 +289,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
       value = hash.reduce(0) {
         value, token in
         var tokenValue = 0.0
-        if let token_index = alphabet.index(of: token as Char) {
+        if let token_index = alphabet.firstIndex(of: token as Char) {
           hashLength = hashLength - 1
           let mul = pow(Double(alphabetLength), Double(hashLength))
           tokenValue = Double(token_index) * mul
@@ -307,7 +307,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
     salt = salt + alphabet
     let lsaltARange = (self.salt.count + 1) ..< salt.count
     let lsaltRange = 0 ..< alphabet.count
-    return (Range<Int>(lsaltARange), Range<Int>(lsaltRange))
+    return (lsaltARange, lsaltRange)
   }
 
 }
@@ -315,7 +315,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
 // MARK: Internal functions
 
 internal func contains<T:Collection>(_ a: T, _ e: T.Iterator.Element) -> Bool where T.Iterator.Element:Equatable {
-  return (a.index(of: e) != nil)
+  return (a.firstIndex(of: e) != nil)
 }
 
 internal func transform<T:Collection>(_ a: T, _ b: T, _ cmpr: (inout Array<T.Iterator.Element>, T, T, T.Iterator.Element) -> Void) -> [T.Iterator.Element] where T.Iterator.Element:Equatable {
