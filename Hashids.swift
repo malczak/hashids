@@ -87,7 +87,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
       numericCast($0.value)
     })
 
-    self.seps = intersection(self.alphabet, self.seps)
+    self.seps = intersection(self.seps, self.alphabet)
     self.alphabet = difference(self.alphabet, self.seps)
     shuffle(&self.seps, self.salt)
 
