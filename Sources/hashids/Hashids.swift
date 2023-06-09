@@ -40,13 +40,13 @@ public protocol HashidsGenerator {
 
   func encode(_ values: [Int]) -> String?
   
-  func decode(_ value: String!) -> [Int]
+  func decode(_ value: String!) -> [Int]?
 
-  func decode(_ value: [Char]) -> [Int]
+  func decode(_ value: [Char]) -> [Int]?
   
-  func decode64(_ value: String) -> [Int64]
+  func decode64(_ value: String) -> [Int64]?
   
-  func decode64(_ value: [Char]) -> [Int64]
+  func decode64(_ value: [Char]) -> [Int64]?
   
 }
 
@@ -72,8 +72,8 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
   fileprivate var guards: [Char]
 
   public init(salt: String!, minHashLength: UInt = 0, alphabet: String? = nil) {
-    var _alphabet = (alphabet != nil) ? alphabet! : HashidsOptions.ALPHABET
-    var _seps = HashidsOptions.SEPARATORS
+    let _alphabet = (alphabet != nil) ? alphabet! : HashidsOptions.ALPHABET
+    let _seps = HashidsOptions.SEPARATORS
 
     self.minHashLength = minHashLength
     self.guards = [Char]()
@@ -156,7 +156,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
     })
   }
 
-  open func decode(_ value: String!) -> [Int] {
+  open func decode(_ value: String!) -> [Int]? {
     let trimmed = value.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     let hash: [Char] = trimmed.unicodeScalars.map() {
       numericCast($0.value)
@@ -164,16 +164,16 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
     return self.decode(hash)
   }
 
-  open func decode(_ value: [Char]) -> [Int] {
+  open func decode(_ value: [Char]) -> [Int]? {
     return self._decode(value)
   }
 
-  open func decode64(_ value: String) -> [Int64] {
-    return self.decode(value).map { Int64($0) }
+  open func decode64(_ value: String) -> [Int64]? {
+    return self.decode(value)?.map { Int64($0) }
   }
   
-  open func decode64(_ value: [Char]) -> [Int64] {
-    return self.decode(value).map { Int64($0) }
+  open func decode64(_ value: [Char]) -> [Int64]? {
+    return self.decode(value)?.map { Int64($0) }
   }
   
   // MARK: private funcitons
@@ -239,12 +239,12 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
     return hash
   }
 
-  fileprivate func _decode(_ hash: [Char]) -> [Int] {
+  fileprivate func _decode(_ hash: [Char]) -> [Int]? {
     var ret = [Int]()
 
     var alphabet = self.alphabet
 
-    var hashes = hash.split(maxSplits: hash.count, omittingEmptySubsequences: false) {
+    let hashes = hash.split(maxSplits: hash.count, omittingEmptySubsequences: false) {
       contains(self.guards, $0)
     }
     let hashesCount = hashes.count, i = ((hashesCount == 2) || (hashesCount == 3)) ? 1 : 0
@@ -263,7 +263,10 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
 
       for subHash in valueHashes {
         shuffle(&alphabet, lsalt, lsaltRange)
-        ret.append(self._unhash(subHash, alphabet))
+        guard let val = self._unhash(subHash, alphabet) else {
+          return nil
+        }
+        ret.append(val)
         lsalt.replaceSubrange(lsaltARange, with: alphabet)
       }
     }
@@ -280,7 +283,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
     } while (number != 0)
   }
 
-  fileprivate func _unhash<U:Collection>(_ hash: U, _ alphabet: [Char]) -> Int where U.Index == Int, U.Iterator.Element == Char {
+  fileprivate func _unhash<U:Collection>(_ hash: U, _ alphabet: [Char]) -> Int? where U.Index == Int, U.Iterator.Element == Char {
     var value: Double = 0
 
     var hashLength: Int = numericCast(hash.count)
@@ -298,7 +301,7 @@ open class Hashids_<T>: HashidsGenerator where T:UnsignedInteger {
       }
     }
 
-    return Int(trunc(value))
+      return Int(exactly: trunc(value))
   }
 
   fileprivate func _saltify(_ salt: inout [Char], _ lottery: Char, _ alphabet: [Char]) -> (Range<Int>, Range<Int>) {

@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Hashids_Swift
+import hashids
 
 class HashIdsTests: XCTestCase {
     
@@ -186,7 +186,14 @@ class HashIdsTests: XCTestCase {
         let hashids = Hashids(salt: "this is my salt")
         let hash = hashids.encode(input)
         let values = hashids.decode64(hash!)
-        XCTAssertEqual(input, values.first)
+        XCTAssertEqual(input, values!.first)
+    }
+    
+    func testDoubleOverflow() {
+        let hashOfMaxInt64 = "jvNx4BjM5KYjv"
+        let hashids = Hashids(salt: "this is my salt")
+        let values = hashids.decode64(hashOfMaxInt64) // Should not crash!
+        XCTAssertNil(values)
     }
     
 }
