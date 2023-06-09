@@ -30,3 +30,6 @@ DerivedData
 #
 Pods/
 Podfile.lock
+
+Packages
+.build
